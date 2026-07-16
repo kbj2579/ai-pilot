@@ -1,0 +1,471 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="BehaviorTree">
+      <UniqueIdentifier>{e6b26ef6-100d-4c0f-a309-9673e4f20c90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geometry">
+      <UniqueIdentifier>{0e71d6fc-71e6-477b-aff8-19ab626a5a4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTree\Task">
+      <UniqueIdentifier>{a8c9a980-2a7a-473a-9b8e-a7eee3c7c7a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTree\Decorator">
+      <UniqueIdentifier>{137280b3-8105-4b3d-8966-2579b6f008db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTree\Service">
+      <UniqueIdentifier>{ad014308-8bd8-40f6-b819-f32c72af22b6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\3rdparty\filesystem\fwd.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\3rdparty\filesystem\path.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\3rdparty\filesystem\resolver.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\actions\always_failure_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\actions\always_success_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\actions\set_blackboard_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\action_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\basic_types.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\behavior_tree.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\blackboard.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\bt_factory.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\bt_parser.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\condition_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\fallback_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\parallel_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\reactive_fallback.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\reactive_sequence.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\sequence_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\sequence_star_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\switch_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\control_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\blackboard_precondition.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\force_failure_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\force_success_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\inverter_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\repeat_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\retry_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\subtree_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\timeout_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\timer_queue.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorator_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\flatbuffers\base.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\flatbuffers\bt_flatbuffer_helper.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\flatbuffers\BT_logger_generated.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\flatbuffers\flatbuffers.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\flatbuffers\stl_emulation.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\leaf_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\loggers\abstract_logger.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\loggers\bt_cout_logger.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\loggers\bt_file_logger.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\loggers\bt_minitrace_logger.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\loggers\bt_zmq_publisher.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\tree_node.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\any.hpp">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\convert_impl.hpp">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\demangle_util.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\exceptions.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\expected.hpp">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\make_unique.hpp">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\platform.hpp">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\safe_any.hpp">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\signal.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\simple_string.hpp">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\strcat.hpp">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\string_view.hpp">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\xml_parsing.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\BlackBoard\CPPBlackBoard.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Functions.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\CPPBehaviorTree.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\filesystem\fwd.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\filesystem\path.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\filesystem\resolver.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\tinyxml2.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Angle.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\AxisAngle.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Controller_CY.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\CoordinateConverter.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\EulerAngle.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Math.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Matrix3.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Matrix4.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Quaternion.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Vector3.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Vector4.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\exceptions.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\shared_library.h">
+      <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Service\AngleOffUpdate.h">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Service\AspectAngleUpdate.h">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Service\CheckSight.h">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Service\DirectionVectorUpdate.h">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Service\DistanceUpdate.h">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Service\ServiceNodes.h">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Service\SelectTarget.h">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Decorator\DECO_AngleOffCheck.h">
+      <Filter>BehaviorTree\Decorator</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Decorator\DECO_BFMCheck.h">
+      <Filter>BehaviorTree\Decorator</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Decorator\DECO_DistanceCheck.h">
+      <Filter>BehaviorTree\Decorator</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Decorator\DECO_LOSCheck.h">
+      <Filter>BehaviorTree\Decorator</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Decorator\DecoratorNodes.h">
+      <Filter>BehaviorTree\Decorator</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Task\TaskNodes.h">
+      <Filter>BehaviorTree\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BT_Content\Task\Task_Empty.h">
+      <Filter>BehaviorTree\Task</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\action_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\basic_types.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\behavior_tree.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\blackboard.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\BlackBoard\CPPBlackBoard.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Functions.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\bt_factory.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\condition_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\controls\fallback_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\controls\parallel_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\controls\reactive_fallback.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\controls\reactive_sequence.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\controls\sequence_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\controls\sequence_star_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\controls\switch_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\control_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\CPPBehaviorTree.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\decorators\inverter_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\decorators\repeat_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\decorators\retry_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\decorators\subtree_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\decorators\timeout_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\decorator_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\tinyxml2.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\tree_node.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\xml_parsing.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Angle.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\AxisAngle.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Controller_CY.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\CoordinateConverter.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\EulerAngle.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Math.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Matrix3.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Matrix4.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Quaternion.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Vector3.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Vector4.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="LibMain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\shared_library_WIN.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\shared_library.cpp">
+      <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Service\AngleOffUpdate.cpp">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Service\AspectAngleUpdate.cpp">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Service\CheckSight.cpp">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Service\DirectionVectorUpdate.cpp">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Service\DistanceUpdate.cpp">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Service\SelectTarget.cpp">
+      <Filter>BehaviorTree\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Decorator\DECO_AngleOffCheck.cpp">
+      <Filter>BehaviorTree\Decorator</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Decorator\DECO_BFMCheck.cpp">
+      <Filter>BehaviorTree\Decorator</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Decorator\DECO_DistanceCheck.cpp">
+      <Filter>BehaviorTree\Decorator</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Decorator\DECO_LOSCheck.cpp">
+      <Filter>BehaviorTree\Decorator</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BT_Content\Task\Task_Empty.cpp">
+      <Filter>BehaviorTree\Task</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

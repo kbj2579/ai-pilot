@@ -1,0 +1,526 @@
+Release/student/ 5 파일 작성·실행 매뉴얼
+학생이 직접 수정하는 다섯 개의 파일에 대한 작성 계약과 예시, 실행 명령을 정리한다. 본체 학습 루프와 실험 인프라(train_rllib.py, scripts/run_experiment.py)는 그대로 두고, 학생은 이 다섯 파일에서 보상 · 관측 · 커리큘럼 · 실행 설정 · 제출 설정만 바꾼다.
+
+cwd: DogFightEnv/Release
+python 3.11.x
+RLlib new API stack
+관측 차원 변경 → bundle 호환 끊김
+5 파일이 환경 / 학습 / 제출과 어떻게 연결되는가
+student/
+학생이 수정하는 영역
+my_reward.py
+보상식 — compute_reward()
+my_observation.py
+관측 벡터 — build_observation()
+my_curriculum.py
+커리큘럼 단계 — get_stages()
+my_train.py
+학습 실행 설정 — TRAINING/ENV/RL_CONFIG
+my_submission.py
+Unreal 서버 제출 클라이언트
+본체 (Release/)
+train_rllib.py
+train_curriculum.py
+scripts/run_experiment.py
+src/dogfight/
+학습 루프 / Ray / RLlib
+checkpoint / bundle 저장
+dashboard / metrics.jsonl
+artifacts/models/<team>/<tag>/
+├ metadata.json
+└ policy_weights.pkl.gz
+= 제출용 bundle
+Unreal 서버
+UDP 9999 · 팀명 / BUNDLE_DIR
+관측 입력 계약은 학습과 동일해야 함
+BUNDLE_DIR
+0. 사전 준비
+cwd · python · 자산 확인
+5 파일을 수정·실행하기 전, 반드시 Release 폴더에서 실행해야 한다. DLL, Rule XML, aircraft, engine, scripts 자산이 Release 루트에 있어야 학습/추론이 동작한다.
+
+Copy
+cd DogFightEnv\Release
+C:\Users\USER\anaconda3\envs\aip\python.exe -m pip install -r requirements.txt
+python -c "import JSBSimWrapper; print('OK')"
+실행 위치 고정
+Release 루트에서 실행하지 않으면 JSBSimAIPLib.dll, AIP_DCS*.dll, Rule.xml 등 런타임 자산을 찾지 못한다. cd DogFightEnv\Release 이후 python train_rllib.py 또는 python student\my_train.py 형태로 호출한다.
+1. my_reward.py
+보상 — compute_reward() 반환 계약
+에이전트가 무엇을 배울지 결정하는 핵심 파일이다. MY_REWARD_CONFIG(dict)와 compute_reward(...) 함수만 제공하면 본체가 매 step마다 호출해 reward를 계산한다. 반환값은 (float total, dict components) 두 값 튜플이며, components의 각 key는 대시보드에서 ep_reward_<name> 으로 자동 기록된다.
+
+1
+계약 (Contract)
+요소	타입	설명
+MY_REWARD_CONFIG	dict	보상 가중치/스케일을 dict로 보존. 본체에서 reward_config로 전달됨.
+compute_reward(...)	callable	아래 인자를 받아 (float, dict) 반환.
+compute_reward 인자
+인자	타입	설명
+ownship_state	np.ndarray	StateIndex.*로 인덱싱. ROLL, PITCH, YAW, KCAS, ALT, HEALTH 등.
+target_state	np.ndarray	상대기 상태(같은 인덱싱).
+ownship_damage	float	아군 누적 피해.
+target_damage	float	적기 누적 피해.
+geo_info	object	_get_distance, _get_antenna_train_angle, _get_aspect_angle 등 기하 메서드 제공.
+wez_config	dict	WEZ 설정 (range, half_angle 등).
+reward_config	dict	MY_REWARD_CONFIG의 런타임 사본.
+terminated / truncated	bool	에피소드 종료 플래그.
+end_condition	str	종료 사유(crash / altitude / time / fdm 등).
+2
+최소 동작 예시 (그대로 실행 가능)
+Copy
+# student/my_reward.py
+from __future__ import annotations
+from dogfight.sim.state_schema import StateIndex
+
+MY_REWARD_CONFIG = {
+    "step_penalty": -0.01,
+    "win_reward": 100.0,
+    "loss_reward": -100.0,
+    "draw_reward": -10.0,
+}
+
+def compute_reward(ownship_state, target_state, ownship_damage, target_damage,
+                   geo_info, wez_config, reward_config,
+                   terminated, truncated, end_condition):
+    components = {"step": float(reward_config["step_penalty"])}
+
+    terminal = 0.0
+    if terminated or truncated:
+        own_hp = float(ownship_state[StateIndex.HEALTH])
+        tgt_hp = float(target_state[StateIndex.HEALTH])
+        if tgt_hp <= 0.0 < own_hp:
+            terminal = float(reward_config["win_reward"])
+        elif own_hp <= 0.0 < tgt_hp:
+            terminal = float(reward_config["loss_reward"])
+        else:
+            terminal = float(reward_config["draw_reward"])
+    components["terminal"] = terminal
+
+    return float(sum(components.values())), components
+3
+확장 예시 — 접근 보상 + WEZ 점유 shaping
+Copy
+MY_REWARD_CONFIG = {
+    "step_penalty": -0.005,
+    "win_reward": 150.0,
+    "loss_reward": -150.0,
+    "draw_reward": -5.0,
+    "approach_scale": 0.002,
+    "wez_bonus": 0.05,
+}
+
+def compute_reward(ownship_state, target_state, ownship_damage, target_damage,
+                   geo_info, wez_config, reward_config,
+                   terminated, truncated, end_condition):
+    components = {"step": float(reward_config["step_penalty"])}
+
+    # 1. 접근 shaping: 가까워질수록 작은 보상
+    distance = geo_info._get_distance(ownship_state, target_state)
+    components["approach"] = -reward_config["approach_scale"] * float(distance) / 1000.0
+
+    # 2. WEZ 점유 보너스: 정면 진입 시 가산점
+    ata = abs(geo_info._get_antenna_train_angle(ownship_state, target_state, False))
+    half_angle = float(wez_config.get("half_angle", 30.0))
+    wez_range = float(wez_config.get("range", 3000.0))
+    in_wez = (ata <= half_angle) and (distance <= wez_range)
+    components["wez"] = reward_config["wez_bonus"] if in_wez else 0.0
+
+    # 3. terminal: 기존 win/loss/draw 유지
+    terminal = 0.0
+    if terminated or truncated:
+        own_hp = float(ownship_state[StateIndex.HEALTH])
+        tgt_hp = float(target_state[StateIndex.HEALTH])
+        if tgt_hp <= 0.0 < own_hp:
+            terminal = reward_config["win_reward"]
+        elif own_hp <= 0.0 < tgt_hp:
+            terminal = reward_config["loss_reward"]
+        else:
+            terminal = reward_config["draw_reward"]
+    components["terminal"] = float(terminal)
+
+    return float(sum(components.values())), components
+4
+실행 명령
+Copy
+python train_rllib.py --algorithm sac --reward-module student.my_reward \
+  --output-name team01 --output-tag reward_v1 --iterations 50
+YAML로 관리하려면 experiments/student_reward_template.yaml의 env.reward_module: student.my_reward를 그대로 두고 python scripts\run_experiment.py experiments\student_reward_template.yaml --dry-run으로 먼저 명령을 확인한다.
+
+components 이름은 분석 도구다
+대시보드와 training_log.csv에 ep_reward_step, ep_reward_wez처럼 자동 기록된다. 이름을 의미 있게 짓고 같은 키를 실험 간 유지하면 비교가 쉽다.
+스케일 차이가 크면 학습이 흔들린다
+terminal +100과 step shaping 0.5를 섞으면 step shaping이 사라진다. 같은 자리수 안에서 가중치를 잡는다.
+제출 전 점검
+MY_REWARD_CONFIG가 dict인지
+compute_reward가 (float, dict)를 반환하는지
+components의 합과 total이 일치하는지
+terminal에서 win/loss/draw가 모두 다뤄지는지
+2. my_observation.py
+관측 — 정책 입력 벡터 계약
+정책 네트워크가 보는 입력 벡터를 직접 정의한다. OBSERVATION_SIZE(int)와 build_observation(...)만 있으면 동작한다. 본체는 module path를 --observation-module로 지정받아 학습/로컬/Unreal 추론에서 같은 함수를 호출한다.
+
+1
+계약
+요소	구분	설명
+OBSERVATION_SIZE	필수	벡터 길이(int). 정책 입력 차원과 일치.
+build_observation(ownship_state, target_state, geo_info, wez_config=None)	필수	np.float32 1-D 벡터 반환. shape는 (OBSERVATION_SIZE,).
+OBSERVATION_MODE	선택	로그/메타데이터용 라벨(예: "student8").
+OBSERVATION_LOW / OBSERVATION_HIGH	선택	Gym observation_space의 범위. 기본 -1.0 ~ 1.0 권장.
+describe_observation()	선택	피처 목록을 반환해 metadata.json에 기록.
+2
+최소 동작 예시 — 8차원 정규화 관측
+Copy
+# student/my_observation.py
+from __future__ import annotations
+import numpy as np
+from dogfight.envs.observation import normalize
+from dogfight.sim.state_schema import StateIndex
+
+OBSERVATION_MODE = "student8"
+OBSERVATION_SIZE = 8
+OBSERVATION_LOW  = -1.0
+OBSERVATION_HIGH =  1.0
+
+def build_observation(ownship_state, target_state, geo_info, wez_config=None):
+    distance = geo_info._get_distance(ownship_state, target_state)
+    ata = geo_info._get_antenna_train_angle(ownship_state, target_state, False)
+    aa  = geo_info._get_aspect_angle(ownship_state, target_state, False)
+
+    obs = np.zeros(OBSERVATION_SIZE, dtype=np.float32)
+    obs[0] = normalize(float(ownship_state[StateIndex.ROLL]),  -180.0, 180.0)
+    obs[1] = normalize(float(ownship_state[StateIndex.PITCH]),  -90.0,  90.0)
+    obs[2] = normalize(float(ownship_state[StateIndex.YAW]),     0.0, 360.0)
+    obs[3] = normalize(float(ownship_state[StateIndex.KCAS]),    0.0, 600.0)
+    obs[4] = normalize(float(ownship_state[StateIndex.ALT]),     0.0, 15000.0)
+    obs[5] = normalize(float(distance), 0.0, 20000.0)
+    obs[6] = normalize(float(ata),  -180.0, 180.0)
+    obs[7] = normalize(float(aa),   -180.0, 180.0)
+    return obs
+
+def describe_observation():
+    return {
+        "mode": OBSERVATION_MODE, "size": OBSERVATION_SIZE,
+        "features": [
+            "ownship_roll_norm", "ownship_pitch_norm", "ownship_yaw_norm",
+            "ownship_kcas_norm", "ownship_alt_norm",
+            "distance_norm", "ata_norm", "aa_norm",
+        ],
+    }
+3
+확장 예시 — 상대 속도/고도차를 추가한 10차원
+Copy
+OBSERVATION_MODE = "student10_rel"
+OBSERVATION_SIZE = 10
+
+def build_observation(ownship_state, target_state, geo_info, wez_config=None):
+    distance = geo_info._get_distance(ownship_state, target_state)
+    ata = geo_info._get_antenna_train_angle(ownship_state, target_state, False)
+    aa  = geo_info._get_aspect_angle(ownship_state, target_state, False)
+    own_alt = float(ownship_state[StateIndex.ALT])
+    tgt_alt = float(target_state[StateIndex.ALT])
+    own_kcas = float(ownship_state[StateIndex.KCAS])
+    tgt_kcas = float(target_state[StateIndex.KCAS])
+
+    obs = np.zeros(OBSERVATION_SIZE, dtype=np.float32)
+    obs[0] = normalize(float(ownship_state[StateIndex.ROLL]),  -180.0, 180.0)
+    obs[1] = normalize(float(ownship_state[StateIndex.PITCH]),  -90.0,  90.0)
+    obs[2] = normalize(own_kcas, 0.0, 600.0)
+    obs[3] = normalize(own_alt,  0.0, 15000.0)
+    obs[4] = normalize(float(distance), 0.0, 20000.0)
+    obs[5] = normalize(float(ata), -180.0, 180.0)
+    obs[6] = normalize(float(aa),  -180.0, 180.0)
+    # 상대 항목
+    obs[7] = normalize(own_alt - tgt_alt, -10000.0, 10000.0)
+    obs[8] = normalize(own_kcas - tgt_kcas, -400.0, 400.0)
+    obs[9] = normalize(float(target_state[StateIndex.HEALTH]) -
+                       float(ownship_state[StateIndex.HEALTH]), -1.0, 1.0)
+    return obs
+4
+실행 명령
+Copy
+python train_rllib.py --algorithm sac --observation-mode custom \
+  --observation-module student.my_observation \
+  --output-name team01 --output-tag observation_v1 --iterations 50
+차원이 바뀌면 기존 bundle과 호환되지 않는다
+OBSERVATION_SIZE나 module 자체를 바꾸면 이전 checkpoint/bundle을 --restore-checkpoint 또는 --init-bundle로 이어 쓸 수 없다. 새 tag로 새 실험을 시작한다.
+학습 / 로컬 / Unreal 같은 module path
+다음 4곳에 같은 module path를 기록한다: YAML env.observation_module, train CLI --observation-module, 로컬 검증 --observation-module, my_submission.py의 OBSERVATION_MODULE.
+제출 전 점검
+반환 vector shape == OBSERVATION_SIZE
+dtype이 np.float32
+학습 때 쓴 module path가 my_submission.py에도 동일하게 들어 있는지
+artifacts/models/<team>/<tag>/metadata.json의 observation_module이 일치하는지
+3. my_curriculum.py
+커리큘럼 — 학습 단계 목록
+커리큘럼 학습 시 단계 목록을 정의한다. get_stages()가 CurriculumStage의 리스트를 반환하면 본체 train_curriculum.py가 순서대로 학습하고 stage 간 진급/롤백을 관리한다.
+
+1
+계약
+요소	타입	설명
+get_stages()	callable	list[CurriculumStage] 반환. 본체가 stage 0부터 순서대로 학습.
+CurriculumStage	dataclass	from dogfight.ai.curriculum import CurriculumStage. 주요 인자는 아래 표 참고.
+CurriculumStage 주요 필드
+필드	설명
+index / name / description	식별과 로그 라벨.
+target_mode	"fixed" / "behavior_tree" / "random" 등. 적기 종류.
+episode_step_limit	에피소드 최대 step 수.
+max_iterations	이 단계 최대 학습 iteration. 진급 조건이 비어 있으면 이 수만큼 학습 후 자동 진급.
+checkpoint_interval	몇 iteration마다 checkpoint 저장할지.
+reward_overrides	이 단계에서만 덮어쓸 reward_config 키.
+randomization	초기 배치 랜덤화 dict. radius, r_roll, r_pitch, r_heading 등.
+advance_conditions	{"win_rate_min": 0.7, "crash_rate_max": 0.3}처럼 rolling 진급 조건.
+advance_window	rolling window iteration 수.
+2
+최소 동작 예시 — 2단계 워밍업 → BT
+Copy
+# student/my_curriculum.py
+from __future__ import annotations
+from dogfight.ai.curriculum import CurriculumStage
+
+def get_stages() -> list[CurriculumStage]:
+    return [
+        CurriculumStage(
+            index=0, name="student_fixed_target",
+            description="Minimal fixed-target warmup stage.",
+            target_mode="fixed", episode_step_limit=3600,
+            max_iterations=10, checkpoint_interval=5,
+            reward_overrides={},
+            randomization={"enabled": True,
+                           "radius": 500.0,
+                           "r_roll": 5.0, "r_pitch": 5.0,
+                           "r_heading": 30.0},
+            advance_conditions={}, advance_window=5,
+        ),
+        CurriculumStage(
+            index=1, name="student_bt_dogfight",
+            description="Minimal behavior-tree opponent stage.",
+            target_mode="behavior_tree", episode_step_limit=18000,
+            max_iterations=20, checkpoint_interval=5,
+            reward_overrides={},
+            randomization={"enabled": True,
+                           "radius": 1500.0,
+                           "r_roll": 10.0, "r_pitch": 8.0,
+                           "r_heading": 120.0},
+            advance_conditions={}, advance_window=5,
+        ),
+    ]
+3
+확장 예시 — 진급 조건과 보상 override
+Copy
+def get_stages() -> list[CurriculumStage]:
+    return [
+        CurriculumStage(
+            index=0, name="warmup_fixed",
+            description="고정 표적으로 기본 비행 안정화",
+            target_mode="fixed", episode_step_limit=3600,
+            max_iterations=20, checkpoint_interval=5,
+            reward_overrides={"step_penalty": -0.002},
+            randomization={"enabled": True, "radius": 800.0,
+                           "r_roll": 5.0, "r_pitch": 5.0,
+                           "r_heading": 45.0},
+            advance_conditions={"crash_rate_max": 0.10},
+            advance_window=5,
+        ),
+        CurriculumStage(
+            index=1, name="pursuit_easy_bt",
+            description="느린 BT 적기 추격",
+            target_mode="behavior_tree", episode_step_limit=9000,
+            max_iterations=40, checkpoint_interval=5,
+            reward_overrides={"approach_scale": 0.004},
+            randomization={"enabled": True, "radius": 1500.0,
+                           "r_roll": 10.0, "r_pitch": 8.0,
+                           "r_heading": 90.0},
+            advance_conditions={"win_rate_min": 0.60,
+                                "crash_rate_max": 0.30},
+            advance_window=10,
+        ),
+        CurriculumStage(
+            index=2, name="full_dogfight",
+            description="전체 dogfight 시나리오",
+            target_mode="behavior_tree", episode_step_limit=18000,
+            max_iterations=200, checkpoint_interval=10,
+            reward_overrides={},
+            randomization={"enabled": True, "radius": 2500.0,
+                           "r_roll": 15.0, "r_pitch": 10.0,
+                           "r_heading": 180.0},
+            advance_conditions={"win_rate_min": 0.70},
+            advance_window=10,
+        ),
+    ]
+4
+실행 명령
+Copy
+python train_curriculum.py --algorithm sac \
+  --reward-module student.my_reward \
+  --stages-module student.my_curriculum \
+  --output-name team01 --output-tag curriculum_v1
+중단된 커리큘럼을 이어 학습하려면 --resume을 추가한다. 그러면 artifacts/dashboard/<run>/curriculum_state.json의 stage/iteration이 복구된다.
+
+본편 기본 curriculum은 참고용
+src/dogfight/ai/curriculum.py에 0~14단계 + 투서클 헤드온 시퀀스가 들어 있다. 그대로 답안처럼 쓰는 대신, 본인 가설에 맞는 단계와 진급 조건을 직접 설계한다.
+4. my_train.py
+학습 실행 — wrapper · train_rllib.py 호출
+학습 루프를 새로 짜지 않는다. TRAINING_CONFIG / ENV_CONFIG / RL_CONFIG를 수정한 뒤 train_rllib.py를 subprocess로 호출하는 얇은 wrapper다. dashboard, record, bundle 저장 등 인프라는 모두 본체가 담당한다.
+
+1
+3개 설정 dict
+dict	주요 키	설명
+TRAINING_CONFIG	team_name, output_tag, algorithm, iterations, reward_module, observation_module	실험 단위 / 학생 hook 모듈.
+ENV_CONFIG	observation_mode, target_mode, target_behavior_dll, max_engage_time, episode_step_limit	환경 조건. observation_module이 비어 있으면 observation_mode가 사용된다.
+RL_CONFIG	framework, num_env_runners, lr, gamma, train_batch_size, minibatch_size 등	RLlib 하이퍼파라미터.
+2
+최소 동작 예시 — 학생 보상만 사용
+Copy
+# student/my_train.py (요약)
+TRAINING_CONFIG = {
+    "team_name": "team01",
+    "output_tag": "v1",
+    "algorithm": "sac",
+    "iterations": 50,
+    "reward_module": "student.my_reward",
+    "observation_module": "",
+}
+
+ENV_CONFIG = {
+    "observation_mode": "tactical16",
+    "target_mode": "behavior_tree",
+    "target_behavior_dll": "AIP_BASE_target.dll",
+    "max_engage_time": 300.0,
+    "episode_step_limit": 18000,
+}
+
+RL_CONFIG = {
+    "framework": "torch",
+    "num_env_runners": 1,
+    "num_envs_per_env_runner": 1,
+    "rollout_fragment_length": "auto",
+    "batch_mode": "truncate_episodes",
+    "lr": 3e-4, "gamma": 0.99,
+    "train_batch_size": 4096,
+    "minibatch_size": 256,
+}
+3
+확장 예시 — 학생 보상 + 학생 관측 + PPO
+Copy
+TRAINING_CONFIG = {
+    "team_name": "team01",
+    "output_tag": "obs_ppo_v1",
+    "algorithm": "ppo",
+    "iterations": 200,
+    "reward_module": "student.my_reward",
+    "observation_module": "student.my_observation",   # custom obs ON
+}
+ENV_CONFIG["target_mode"] = "behavior_tree"
+ENV_CONFIG["episode_step_limit"] = 18000
+RL_CONFIG["train_batch_size"] = 8192
+RL_CONFIG["minibatch_size"] = 512
+4
+실행 명령
+Copy
+# 1) dry-run 으로 호출되는 train_rllib.py 명령을 먼저 확인
+python student\my_train.py --dry-run
+
+# 2) smoke 실행: 한 iteration만
+python student\my_train.py --iterations 1
+
+# 3) 본 학습
+python student\my_train.py --team-name team01 --output-tag v2 --iterations 200
+dry-run 먼저
+my_train.py는 print()로 실제 호출 명령을 보여준 뒤 subprocess.run으로 train_rllib.py를 실행한다. --dry-run은 명령만 출력하고 종료하므로 옵션 조합이 의도대로 들어갔는지 빠르게 점검할 수 있다.
+학습 루프를 직접 짜지 않는다
+wrapper 안에서 RLlib을 부르거나, env 생성을 새로 하지 않는다. 그렇게 하면 dashboard, record, bundle 저장이 끊어진다. 항상 train_rllib.py를 통해 호출한다.
+5. my_submission.py
+제출 — Unreal 서버 클라이언트
+학습한 모델을 경진대회 Unreal 서버에 연결하는 UDP 클라이언트다. 학습 시 사용한 bundle 경로(BUNDLE_DIR)와 관측 mode/module을 그대로 입력하는 것이 가장 중요하다. MODE는 rl, bt, hybrid 세 가지.
+
+1
+설정 항목
+설정	의미	확인 포인트
+TEAM_NAME	표시 이름	운영 공지의 등록명과 정확히 일치
+SERVER_IP / SERVER_PORT	Unreal 서버 주소	운영 공지 기준
+MODE	rl / bt / hybrid	실험 의도와 일치
+BUNDLE_DIR	제출용 policy 경로	metadata.json + policy_weights.pkl.gz 두 파일이 모두 존재해야 함
+OBSERVATION_MODE / OBSERVATION_MODULE	policy 입력 계약	학습 metadata와 동일해야 함
+BT_DLL / BT_RULE_XML	BT 백엔드 사용 시 행동 트리	Release 루트에 파일 존재
+HYBRID_MODE, RESIDUAL_SCALE, ALPHA	hybrid 세부 옵션	residual / blend / switch
+ACTION_REPEAT	policy 호출 주기	학습 시 step_ratio와 동일하게(기본 6)
+2
+최소 동작 예시 — RL 단일 모드 제출
+Copy
+# student/my_submission.py 핵심 수정 부분
+TEAM_NAME = "team01"
+SERVER_IP = "221.151.77.208"
+SERVER_PORT = 9999
+
+MODE = "rl"
+
+BUNDLE_DIR = "artifacts/models/team01/v1"
+OBSERVATION_MODE = "tactical16"
+OBSERVATION_MODULE = ""   # 기본 관측이면 빈 문자열
+3
+확장 예시 — custom 관측 + RL/BT 하이브리드
+Copy
+TEAM_NAME = "team01"
+SERVER_IP = "221.151.77.208"
+SERVER_PORT = 9999
+
+MODE = "hybrid"
+
+BUNDLE_DIR = "artifacts/models/team01/observation_v1"
+OBSERVATION_MODE = "custom"
+OBSERVATION_MODULE = "student.my_observation"
+
+BT_DLL = "AIP_BASE.dll"
+BT_RULE_XML = "Rule_team01.xml"
+
+HYBRID_MODE = "residual"   # BT가 베이스, RL은 보정
+RESIDUAL_SCALE = 0.35
+ALPHA = 0.5
+
+ACTION_REPEAT = 6
+4
+실행 명령
+Copy
+# 방법 A: 파일 수정 후 직접 실행
+python student\my_submission.py
+
+# 방법 B: 커맨드라인으로 직접 — RL 모델 사용
+python run_unreal_inference.py --mode rl ^
+    --bundle-dir artifacts/models/team01/v1 ^
+    --team-name team01 ^
+    --server-ip <서버IP> --server-port 9999
+
+# 방법 C: RL + BT 하이브리드
+python run_unreal_inference.py --mode hybrid ^
+    --bundle-dir artifacts/models/team01/v1 ^
+    --bt-dll AIP_BASE.dll --bt-rule-xml Rule_team01.xml ^
+    --hybrid-mode residual --residual-scale 0.35 ^
+    --team-name team01 --server-ip <서버IP>
+5
+제출 전 로컬 검증
+Copy
+python run_local_dogfight.py ^
+    --ownship-backend rl ^
+    --ownship-bundle-dir artifacts/models/team01/v1 ^
+    --target-backend bt --save-log
+관측 계약 불일치는 silent failure가 된다
+학습 시 tactical16으로 훈련했는데 제출 시 OBSERVATION_MODULE이 다른 module을 가리키면 policy 입력 차원이 어긋난다. metadata.json의 obs_mode / observation_module과 my_submission.py의 두 값을 항상 함께 확인한다.
+BT 모드는 모델이 없어도 동작
+MODE = "bt"면 BUNDLE_DIR을 보지 않는다. 학습이 늦어졌다면 우선 BT로 접속해 네트워크/팀명을 점검하고, 학습 후 MODE = "rl"로 전환한다.
+제출 직전 최종 체크리스트
+실행 위치: DogFightEnv\Release 루트인지
+DLL / Rule XML / aircraft / engine / scripts 자산 존재 여부
+BUNDLE_DIR 안에 metadata.json, policy_weights.pkl.gz 둘 다 있는지
+OBSERVATION_MODE / OBSERVATION_MODULE이 학습 metadata와 같은지
+TEAM_NAME이 운영 공지와 일치하는지
+ACTION_REPEAT가 학습 시 step_ratio와 같은지 (기본 6)
+★ 전체 워크플로
+아이디어 → 실험 → 제출
+가설 정의 — 어떤 보상/관측/커리큘럼을 시험할지 한 줄로 적는다.
+학생 파일 수정 — 변경 범위를 1개로 좁힌다 (예: my_reward.py만).
+dry-run — python student\my_train.py --dry-run 또는 python scripts\run_experiment.py experiments\student_reward_template.yaml --dry-run으로 호출 명령을 확인.
+smoke 1 iteration — --iterations 1로 실행 가능성/관측 shape/보상 반환/bundle 저장을 점검.
+본 학습 — 안정화 후 iterations와 train_batch_size를 키운다.
+대시보드 비교 — artifacts/dashboard/<run>/metrics.jsonl과 config.json을 같이 본다.
+로컬 검증 — run_local_dogfight.py로 RL vs BT 한 경기를 돌려 실패 원인을 본다.
+Unreal 제출 — my_submission.py 또는 run_unreal_inference.py로 서버에 접속.
+

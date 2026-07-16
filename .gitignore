@@ -1,0 +1,47 @@
+# Build artifacts / IDE
+Debug/
+Release/x64/
+x64/
+bin/
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.log
+*.tlog
+*.idb
+*.recipe
+*.FileListAbsolute.txt
+.vs/
+
+# Compiled binaries / runtime assets (large, vendor-provided, not source we authored)
+*.dll
+*.exe
+DogFightEnv/Release/assets/
+DogFightEnv/Release/aircraft/
+DogFightEnv/Release/engine/
+DogFightEnv/Release/scripts/*.xml
+Windows/Engine/
+Windows/DogFightViewer.exe
+Windows/DogFightViewer/
+Windows/*.exe
+
+# RLlib patch bundle (large, vendored)
+DogFightEnv/Release/RLLibLstm/ray_2_54_0_original/
+DogFightEnv/Release/RLLibLstm/ray_2_54_0_patched/
+
+# Training outputs (regenerated constantly, not source)
+DogFightEnv/Release/artifacts/
+DogFightEnv/Release/logs/
+
+# Python
+__pycache__/
+*.pyc
+DogFightEnv/Release/student/__pycache__/
+DogFightEnv/Release/tools/__pycache__/
+DogFightEnv/Release/scripts/__pycache__/
+
+# OS junk
+Thumbs.db
+.DS_Store

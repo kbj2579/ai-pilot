@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)../bin/$(Configuration).$(ShortPlatform)\</OutDir>
+    <IntDir>$(SolutionDir)../bin/intermediate/$(Configuration).$(ShortPlatform)/$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\MAK\vrforces4.5\include;$(MAK_VRLDIR)/include;$(MAK_RTIDIR)/include;$(MAK_RTIDIR)/include/HLA1516;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;NOMINMAX;BOOST_NO_RVALUE_REFERENCES;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;DT_DLL_BUILD;DT_USE_DLL;DtHLA=1;DtHLA_1516=1;RTI_USES_STD_FSTREAM=1;IS_64BIT;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4005;4251;4267;4311;4312;4275;4675;4250</DisableSpecificWarnings>
+      <AdditionalOptions> /Zm1000 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(MAK_VRLDIR)/lib64;C:\MAK\vrforces4.5\lib64;$(SolutionDir)../bin/$(Configuration).$(ShortPlatform);$(MAK_RTIDIR)/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua5.1.lib;vlutil.lib;matrix.lib;mtl.lib;vlHLA1516.lib;vl.lib;libfedtime1516_64.lib;librti1516_64.lib;vrfExtObjectsHLA1516.lib;vrfExtProtocol.lib;vrftasks.lib;vrfobjcoreHLA1516.lib;vrfcgfHLA1516.lib;vrfutil.lib;vrfmsgs.lib;vrfMsgTransportHLA1516.lib;vrfcoreHLA1516.lib;vrfobjparam.lib;tdbutil.lib;simTerrainDrawer.lib;vrfNavigation.lib;vrfplan.lib;vrfGenericPropertiesHLA1516.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <StackReserveSize>10000000</StackReserveSize>
+      <LargeAddressAware>true</LargeAddressAware>
+      <AdditionalOptions> /machine:x64 /debug %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>

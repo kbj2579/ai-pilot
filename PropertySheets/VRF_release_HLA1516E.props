@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <ShortPlatform Condition="'$(Platform)' == 'Win32'">x86</ShortPlatform>
+    <ShortPlatform Condition="'$(Platform)' == 'x64'">x64</ShortPlatform>
+    <LibraryPlatformSuffix Condition="'$(Platform)' == 'Win32'">
+    </LibraryPlatformSuffix>
+    <LibraryPlatformSuffix Condition="'$(Platform)' == 'x64'">.x64</LibraryPlatformSuffix>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir>$(SolutionDir)../bin/$(Configuration).$(ShortPlatform)\</OutDir>
+    <IntDir>$(SolutionDir)../bin/intermediate/$(Configuration).$(ShortPlatform)/$(ProjectName)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MAK_RTIDIR)/include;$(MAK_VRLDIR)/include;C:\MAK\vrforces4.5\include;$(MAK_RTIDIR)/include/HLA1516E;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;NOMINMAX;BOOST_NO_RVALUE_REFERENCES;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;DT_DLL_BUILD;DT_USE_DLL;DtHLA=1;DtHLA_1516=1;RTI_USES_STD_FSTREAM=1;DtHLA_1516_EVOLVED=1;IS_64BIT;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <AdditionalLibraryDirectories>$(MAK_VRLDIR)/lib64;C:\MAK\vrforces4.5\lib64;$(SolutionDir)../bin/$(Configuration).$(ShortPlatform);$(MAK_RTIDIR)/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua5.1.lib;vlutil.lib;matrix.lib;mtl.lib;vlHLA1516e.lib;vl.lib;libfedtime1516e64.lib;librti1516e64.lib;vrfExtObjectsHLA1516e.lib;vrfExtProtocol.lib;vrftasks.lib;vrfobjcoreHLA1516e.lib;vrfcgfHLA1516e.lib;vrfutil.lib;vrfmsgs.lib;vrfMsgTransportHLA1516e.lib;vrfcoreHLA1516e.lib;vrfobjparam.lib;tdbutil.lib;simTerrainDrawer.lib;vrfNavigation.lib;vrfplan.lib;vrfGenericPropertiesHLA1516e.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <StackReserveSize>10000000</StackReserveSize>
+      <LargeAddressAware>true</LargeAddressAware>
+      <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>

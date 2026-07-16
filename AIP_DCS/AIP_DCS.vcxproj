@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{83af85c0-8db7-4bf1-9e13-f7f5f3b47fa8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>AIP_DCS</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\PropertySheets\Essential_debug.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\PropertySheets\Essential_release.props" />
+    <Import Project="..\..\PropertySheets\LDFP_Model.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)../bin/debug.x64</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;AIPILOTV1_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>D:\PropertySheets</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(SolutionDir)../bin/intermediate/$(Configuration).$(ShortPlatform)/$(ProjectName)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;AIPILOTV1_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;AIPILOTV1_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;AIPILOTV1_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="BehaviorTree\3rdparty\filesystem\fwd.h" />
+    <ClInclude Include="BehaviorTree\3rdparty\filesystem\path.h" />
+    <ClInclude Include="BehaviorTree\3rdparty\filesystem\resolver.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\actions\always_failure_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\actions\always_success_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\actions\set_blackboard_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\action_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\basic_types.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\behavior_tree.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\blackboard.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\bt_factory.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\bt_parser.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\condition_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\fallback_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\parallel_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\reactive_fallback.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\reactive_sequence.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\sequence_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\sequence_star_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\controls\switch_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\control_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\blackboard_precondition.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\force_failure_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\force_success_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\inverter_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\repeat_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\retry_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\subtree_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\timeout_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorators\timer_queue.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\decorator_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\exceptions.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\flatbuffers\base.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\flatbuffers\bt_flatbuffer_helper.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\flatbuffers\BT_logger_generated.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\flatbuffers\flatbuffers.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\flatbuffers\stl_emulation.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\leaf_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\loggers\abstract_logger.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\loggers\bt_cout_logger.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\loggers\bt_file_logger.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\loggers\bt_minitrace_logger.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\loggers\bt_zmq_publisher.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\tree_node.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\any.hpp" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\convert_impl.hpp" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\demangle_util.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\exceptions.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\expected.hpp" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\make_unique.hpp" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\platform.hpp" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\safe_any.hpp" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\shared_library.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\signal.h" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\simple_string.hpp" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\strcat.hpp" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\utils\string_view.hpp" />
+    <ClInclude Include="BehaviorTree\behaviortree_cpp_v3\xml_parsing.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\BlackBoard\CPPBlackBoard.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Decorator\DecoratorNodes.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Decorator\DECO_AngleOffCheck.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Decorator\DECO_BFMCheck.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Decorator\DECO_DistanceCheck.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Decorator\DECO_LOSCheck.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Functions.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Service\AngleOffUpdate.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Service\AspectAngleUpdate.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Service\CheckSight.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Service\DirectionVectorUpdate.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Service\DistanceUpdate.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Service\SelectTarget.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Service\ServiceNodes.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Task\TaskNodes.h" />
+    <ClInclude Include="BehaviorTree\BT_Content\Task\Task_Empty.h" />
+    <ClInclude Include="BehaviorTree\CPPBehaviorTree.h" />
+    <ClInclude Include="BehaviorTree\filesystem\fwd.h" />
+    <ClInclude Include="BehaviorTree\filesystem\path.h" />
+    <ClInclude Include="BehaviorTree\filesystem\resolver.h" />
+    <ClInclude Include="BehaviorTree\tinyxml2.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="Geometry\Angle.h" />
+    <ClInclude Include="Geometry\AxisAngle.h" />
+    <ClInclude Include="Geometry\Controller_CY.h" />
+    <ClInclude Include="Geometry\CoordinateConverter.h" />
+    <ClInclude Include="Geometry\EulerAngle.h" />
+    <ClInclude Include="Geometry\Math.h" />
+    <ClInclude Include="Geometry\Matrix3.h" />
+    <ClInclude Include="Geometry\Matrix4.h" />
+    <ClInclude Include="Geometry\Quaternion.h" />
+    <ClInclude Include="Geometry\Vector3.h" />
+    <ClInclude Include="Geometry\Vector4.h" />
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BehaviorTree\action_node.cpp" />
+    <ClCompile Include="BehaviorTree\basic_types.cpp" />
+    <ClCompile Include="BehaviorTree\behavior_tree.cpp" />
+    <ClCompile Include="BehaviorTree\blackboard.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\BlackBoard\CPPBlackBoard.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Decorator\DECO_AngleOffCheck.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Decorator\DECO_BFMCheck.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Decorator\DECO_DistanceCheck.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Decorator\DECO_LOSCheck.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Functions.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Service\AngleOffUpdate.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Service\AspectAngleUpdate.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Service\CheckSight.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Service\DirectionVectorUpdate.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Service\DistanceUpdate.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Service\SelectTarget.cpp" />
+    <ClCompile Include="BehaviorTree\BT_Content\Task\Task_Empty.cpp" />
+    <ClCompile Include="BehaviorTree\bt_factory.cpp" />
+    <ClCompile Include="BehaviorTree\condition_node.cpp" />
+    <ClCompile Include="BehaviorTree\controls\fallback_node.cpp" />
+    <ClCompile Include="BehaviorTree\controls\parallel_node.cpp" />
+    <ClCompile Include="BehaviorTree\controls\reactive_fallback.cpp" />
+    <ClCompile Include="BehaviorTree\controls\reactive_sequence.cpp" />
+    <ClCompile Include="BehaviorTree\controls\sequence_node.cpp" />
+    <ClCompile Include="BehaviorTree\controls\sequence_star_node.cpp" />
+    <ClCompile Include="BehaviorTree\controls\switch_node.cpp" />
+    <ClCompile Include="BehaviorTree\control_node.cpp" />
+    <ClCompile Include="BehaviorTree\CPPBehaviorTree.cpp" />
+    <ClCompile Include="BehaviorTree\decorators\inverter_node.cpp" />
+    <ClCompile Include="BehaviorTree\decorators\repeat_node.cpp" />
+    <ClCompile Include="BehaviorTree\decorators\retry_node.cpp" />
+    <ClCompile Include="BehaviorTree\decorators\subtree_node.cpp" />
+    <ClCompile Include="BehaviorTree\decorators\timeout_node.cpp" />
+    <ClCompile Include="BehaviorTree\decorator_node.cpp" />
+    <ClCompile Include="BehaviorTree\shared_library.cpp" />
+    <ClCompile Include="BehaviorTree\shared_library_WIN.cpp" />
+    <ClCompile Include="BehaviorTree\tinyxml2.cpp" />
+    <ClCompile Include="BehaviorTree\tree_node.cpp" />
+    <ClCompile Include="BehaviorTree\xml_parsing.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Geometry\Angle.cpp" />
+    <ClCompile Include="Geometry\AxisAngle.cpp" />
+    <ClCompile Include="Geometry\Controller_CY.cpp" />
+    <ClCompile Include="Geometry\CoordinateConverter.cpp" />
+    <ClCompile Include="Geometry\EulerAngle.cpp" />
+    <ClCompile Include="Geometry\Math.cpp" />
+    <ClCompile Include="Geometry\Matrix3.cpp" />
+    <ClCompile Include="Geometry\Matrix4.cpp" />
+    <ClCompile Include="Geometry\Quaternion.cpp" />
+    <ClCompile Include="Geometry\Vector3.cpp" />
+    <ClCompile Include="Geometry\Vector4.cpp" />
+    <ClCompile Include="LibMain.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
