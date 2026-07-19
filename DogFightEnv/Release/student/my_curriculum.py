@@ -60,11 +60,30 @@ def get_stages() -> list[CurriculumStage]:
             max_iterations=200,
             checkpoint_interval=10,
             reward_overrides={},       # MY_REWARD_CONFIG already IS the Stage-0 baseline
+            # NOTE on randomization values -- two bugs found empirically here:
+            # (1) radius=100.0 (first attempt) caused one env-runner worker to
+            #     permanently get stuck in "FDM Update Fail" from its very
+            #     first reset onward (reproduced twice, in two independent Ray
+            #     sessions) -- a randomized initial position/attitude rarely
+            #     but reproducibly puts JSBSim into a state it can't recover
+            #     from, and the env has no retry/self-heal logic for that.
+            # (2) radius=0.0 (second attempt, copying the reference
+            #     curriculum's own Stage 0 verbatim) crashes ALL workers
+            #     immediately with `ValueError: high <= 0` inside
+            #     single_agent_env.py's add_random_init_position(), which
+            #     calls `self.np_random.integers(0, radius)` unconditionally
+            #     whenever ownship_randomization.enabled=True -- it never
+            #     guards against radius==0. This looks like a latent bug in
+            #     the reference curriculum's own shipped Stage-0 config, not
+            #     something introduced here. Since that code isn't ours to
+            #     fix, radius must stay a small POSITIVE number.
+            # Landed on a small nonzero radius (20m) with mild attitude
+            # jitter as the safest known-working combination so far.
             randomization={
                 "enabled": True,
-                "radius": 100.0,
-                "r_roll": 10.0,
-                "r_pitch": 10.0,
+                "radius": 20.0,
+                "r_roll": 5.0,
+                "r_pitch": 5.0,
                 "r_heading": 15.0,
             },
             advance_conditions={
@@ -91,11 +110,17 @@ def get_stages() -> list[CurriculumStage]:
                 "loss_reward": -30.0,
                 "draw_reward": -5.0,
             },
+            # UPDATE: radius=150 (with r_pitch already reduced to 6.0) STILL
+            # reproduced the FDM-Update-Fail lockup (on a different worker,
+            # in Stage 1 specifically) -- so radius itself, not just r_pitch,
+            # is implicated. Capping radius at the same small value (20.0)
+            # that ran clean for all 200 Stage-0 iterations until this is
+            # understood better.
             randomization={
                 "enabled": True,
-                "radius": 200.0,
-                "r_roll": 15.0,
-                "r_pitch": 15.0,
+                "radius": 20.0,
+                "r_roll": 10.0,
+                "r_pitch": 6.0,
                 "r_heading": 30.0,
             },
             advance_conditions={
@@ -132,11 +157,13 @@ def get_stages() -> list[CurriculumStage]:
                 "loss_reward": -30.0,
                 "draw_reward": -5.0,
             },
+            # radius capped at 20.0 -- see Stage 0/1 comments on the
+            # FDM-Update-Fail lockup reproduced at larger radius values.
             randomization={
                 "enabled": True,
-                "radius": 400.0,
+                "radius": 20.0,
                 "r_roll": 20.0,
-                "r_pitch": 20.0,
+                "r_pitch": 10.0,
                 "r_heading": 45.0,
             },
             advance_conditions={
@@ -167,11 +194,13 @@ def get_stages() -> list[CurriculumStage]:
                 "loss_reward": -50.0,
                 "draw_reward": -10.0,
             },
+            # radius capped at 20.0 -- see Stage 0/1 comments on the
+            # FDM-Update-Fail lockup reproduced at larger radius values.
             randomization={
                 "enabled": True,
-                "radius": 600.0,
+                "radius": 20.0,
                 "r_roll": 20.0,
-                "r_pitch": 20.0,
+                "r_pitch": 10.0,
                 "r_heading": 60.0,
             },
             advance_conditions={
@@ -287,9 +316,11 @@ def get_stages() -> list[CurriculumStage]:
                 "loss_reward": -100.0,
                 "draw_reward": -20.0,
             },
+            # radius capped at 20.0 -- see Stage 0/1 comments on the
+            # FDM-Update-Fail lockup reproduced at larger radius values.
             randomization={
                 "enabled": True,
-                "radius": 2000.0,
+                "radius": 20.0,
                 "r_roll": 15.0,
                 "r_pitch": 10.0,
                 "r_heading": 180.0,

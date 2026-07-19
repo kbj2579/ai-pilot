@@ -120,16 +120,37 @@ Phase 1 — 생존: 내 비행기가 혼자서도 추락/실속하지 않고 안
      랜덤화를 켠 커리큘럼 실행에서만 문제가 재현된 것으로 보아, 무작위
      초기 자세/위치가 드물게 JSBSim 비행 모델을 되돌릴 수 없이 망가뜨리고,
      한번 망가진 워커는 그 이후 리셋에서도 계속 실패하는 것으로 추정.
-   → 대응: Stage 0/1 등의 랜덤화 폭을 본체 기본값에 가깝게 줄여서 재시도 중
-     (이 로그를 작성하는 시점 기준 진행 중인 작업).
+   → 대응: Stage 0의 랜덤화 radius를 100→20(작은 양수)으로 낮추고 재시도
+     (curriculum_v3). 그런데 radius=0.0을 그대로 썼던 부분(본체 참고
+     커리큘럼 값을 실수로 복사)에서 완전히 다른 버그 발견:
+     add_random_init_position()이 `self.np_random.integers(0, radius)`를
+     radius=0일 때 가드 없이 호출해서 `ValueError: high<=0`으로 워커 전체가
+     즉시 크래시(access violation). 이건 본체 코드 자체의 잠재적 버그로
+     보임(수정 불가 파일). radius를 0이 아닌 작은 양수(20.0)로 바꿔서 해결.
+   → curriculum_v4로 재시작: Stage 0(radius=20)은 200 iteration 전부 정상
+     완주(crash_rate=0.0 계열 재확인). 그런데 Stage 1로 넘어가는 weight
+     restore 단계에서 본체 train_curriculum.py가 콘솔에 유니코드
+     체크마크(✓/✗)를 출력하려다 이 PC의 한글 Windows 코드페이지(cp949)가
+     이를 인코딩 못해 UnicodeEncodeError로 전체 프로세스가 죽음. 파일 수정
+     없이 PYTHONIOENCODING=utf-8, PYTHONUTF8=1 환경변수를 추가하고
+     --resume으로 재시작.
+   → 인코딩 문제는 해결됐으나, Stage 1(radius=150, r_pitch만 6으로 축소)에서
+     "FDM Update Fail" 락업이 또 재발(이번엔 다른 워커). r_pitch를 줄인 것만
+     으로는 부족했고 radius 자체가 원인임을 재확인. 최종적으로 전체 7단계의
+     radius를 전부 20.0으로 통일(안전이 확인된 Stage 0 수준)하고 --resume으로
+     재시작. (참고: 중간에 PC가 한 번 꺼졌다 켜지는 일이 있었음 — 모든 학습
+     프로세스가 사라져서 재시작함.)
 
 
 5. 현재 상태
 -------------
-- Phase 1(생존)은 격리된 단독 실행 기준으로 이미 검증 완료.
-- 7단계 전체 자동 커리큘럼 파이프라인은 FDM 안정성 문제로 두 차례 재시작.
-  랜덤화 값을 낮춰서 다시 시도하는 중이며, 안정화되는 대로 자율적으로
-  Stage 0부터 Stage 6까지 순차 진행할 예정.
+- Phase 1(생존)은 격리된 단독 실행과 커리큘럼의 Stage 0 실제 실행 모두에서
+  검증 완료(crash_rate=0.0, 200 iteration 전부 완주).
+- 7단계 전체 자동 커리큘럼 파이프라인은 서로 다른 원인의 크래시를 4차례
+  겪으며 디버깅 중(FDM 락업 2회, numpy ValueError 1회, 유니코드 인코딩 1회).
+  현재 radius를 전 단계 20.0으로 통일 + UTF-8 인코딩 강제 설정 후
+  Stage 1부터 재개(curriculum_v4, --resume) 진행 중. 안정화되는 대로
+  자율적으로 Stage 1부터 Stage 6까지 순차 진행할 예정.
 - 사용자 결정에 따라 대회 서버 제출(student/my_submission.py) 등 되돌리기
   어려운 작업은 하지 않고, 학습 진행 상황만 계속 갱신한다.
 - 대회 운영진 Discord에서 공지된 환경 패치(체크포인트 저장 정책 분리,
@@ -137,3 +158,8 @@ Phase 1 — 생존: 내 비행기가 혼자서도 추락/실속하지 않고 안
   현재 저장소에 아직 반영되어 있지 않음을 확인했으며, 사용자 결정에 따라
   지금은 보류하고 custom observation을 실제로 쓰게 될 때 공식 Release
   zip으로 제대로 반영하기로 함.
+- "다른 사람과 스크림하는 법"을 사용자가 물어봐서 답변함: (1) 로컬에서
+  run_local_dogfight.py로 양쪽에 서로 다른 bundle을 지정해 즉시 대결 가능,
+  (2) 실제 Unreal 교전서버(Discord에 언급된 BattleServer_V0.1)를 한 명이
+  열고 양쪽이 run_unreal_inference.py로 접속하는 방식. 이 저장소의
+  Windows/DogFightViewer.exe가 그 서버와 동일한지는 확인 필요라고 안내함.
