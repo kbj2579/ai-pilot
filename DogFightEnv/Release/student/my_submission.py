@@ -58,7 +58,7 @@ from dogfight.unreal import AIType, ProviderCommandPolicy, UnrealAIPilotUDPClien
 # TODO: 아래 설정을 팀에 맞게 수정하세요.
 # =============================================================================
 
-TEAM_NAME = "team01"                               # TODO: 팀 이름
+TEAM_NAME = "paranchae"                             # TODO: 팀 이름
 # TODO(스크림): BattleServer를 연 사람의 IP로 바꾸세요.
 #   - 같은 PC에서 테스트: "127.0.0.1"
 #   - 같은 와이파이/LAN: 호스트의 사설 IP (예: 192.168.x.x, ipconfig로 확인)
